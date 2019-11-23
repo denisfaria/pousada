@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/container.css' %}">
+
+  <style>
+    span.required:after {
+      content: "*";
+      color: red;
+    }
+  </style>
+{% endblock style %}
+
+{% block content %}
+
+<div class="my-container" style="padding-top: 10px;">
+  <!-- Campo de Busca -->
+  <div style="margin: 10px 0">
+    <div class="col-sm-12">
+      <form action="" method="GET" class="form-inline">
+        <input id="id_search" name="search" class="form-control" type="text" placeholder="Busca" />
+        <button type="submit" class="btn btn-primary ml-1">Buscar</button>
+        <a href="." class="ml-2">Limpar</a>
+      </form>
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-primary" data-toggle="modal" data-target="#myQuartoAdd">Cadastrar</button>
+  </div>
+  <h1>Lista de Quartos</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Título</th>
+        <th>Padrão</th>
+        <th>Diária</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for quarto in quartos %}
+      <tr>
+        <th>{{ quarto.numero }}</th>
+        <td>
+          <a data-toggle="modal" href="#myQuarto_{{quarto.pk}}">{{ quarto.titulo }}</a>
+          <!-- Modal -->
+          <div class="modal fade" id="myQuarto_{{quarto.pk}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabelQuarto">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabelQuarto">Quarto</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group">
+                    <li class="list-group-item">Número: {{ quarto.numero }}</li>
+                    <li class="list-group-item">Título: {{ quarto.titulo }}</li>
+                    <li class="list-group-item">Padrão: {{ quarto.padrao }}</li>
+                    <li class="list-group-item">Diária: R$ {{ quarto.valor_diaria }}</li>
+                    <li class="list-group-item">Observações: {{ quarto.observacoes }}</li>
+                  </ul>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>{{ quarto.padrao }}</td>
+        <td style="width: 150px;">R$ <span class="pull-right">{{ quarto.valor_diaria }}</span></td>
+        <td class="text-center">
+          <a class="edit-quarto" 
+             data-toggle="modal" 
+             data-id="{{ quarto.id }}"
+             data-numero="{{ quarto.numero }}"
+             data-titulo="{{ quarto.titulo }}"
+             data-padrao="{{ quarto.padrao.id }}"
+             data-diaria="{{ quarto.valor_diaria }}"
+             data-observacoes="{{ quarto.observacoes }}"
+             href="#myModalEdit_{{quarto.pk}}">
+            <i class="fa fa-edit"></i>
+          </a>
+          <!-- Modal -->
+          <div class="modal fade" id="myModalEdit_{{quarto.pk}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabel">Editar</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <form action="{% url 'hotel:quartos_edit' quarto.pk %}" method="POST">
+                  <div class="modal-body text-left">
+                    {% csrf_token %}
+                    <input id="id_pk" name="pk" class="form-control" type="hidden" value="{{ quarto.pk }}" />
+                    {% for field in form.visible_fields %}
+                      <div class="form-group{% if field.errors %} has-error {% endif %}">
+                        <label for="{{ field.id_for_label }}">
+                          {% if field.field.required %}
+                          <span class="required">{{ field.label }} </span>
+                          {% else %}
+                          {{ field.label }}
+                          {% endif %}
+                        </label>
+                        {% render_field field class="form-control" %}
+                        {% for error in field.errors %}
+                        <span class="text-muted">{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <a data-toggle="modal" data-target="#myModal_{{quarto.pk}}">
+            <i class="fa fa-close" style="padding-left: 10px; color: red"></i>
+          </a>
+          <!-- Modal -->
+          <div class="modal fade" id="myModal_{{quarto.pk}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="myModalLabel">Deletar</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body text-left">
+                  Deseja deletar <b>{{ quarto.titulo }} {{ quarto.padrao }}</b>?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                  <a href="{% url 'hotel:quartos_delete' quarto.pk %}" type="button" class="btn btn-danger">Deletar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </td>
+      </tr>
+      </li>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myQuartoAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabelQuartoAdd">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabelQuartoAdd">Cadastrar</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <form action="{% url 'hotel:quartos_add' %}" method="POST">
+        <div class="modal-body">
+          {% csrf_token %}
+          {% for field in form.visible_fields %}
+          <div class="form-group{% if field.errors %} has-error {% endif %}">
+            <label for="{{ field.id_for_label }}">
+              {% if field.field.required %}
+              <span class="required">{{ field.label }} </span>
+              {% else %}
+              {{ field.label }}
+              {% endif %}
+            </label>
+            {% render_field field class="form-control" %}
+            {% for error in field.errors %}
+            <span class="text-muted">{{ error }}</span>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+  <script src="{% static 'js/quartos.js' %}"></script>
+
+{% endblock js %}

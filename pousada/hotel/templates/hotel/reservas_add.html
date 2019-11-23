@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<style>
+  span.required:after {
+    content: "*";
+    color: red;
+  }
+</style>
+
+<div class="container text-center">
+  <div class="row row-space">
+    <div class="col-md-6">
+      <form action="." method="POST" data-valor="{{ valor_diaria }}">
+        <p>Quarto: {{ quarto }}</p>
+        <p>Pessoa: {{ pessoa }}</p>
+        <p>Diária: {{ valor_diaria }}</p>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+          <div class="form-group{% if field.errors %} has-error {% endif %}">
+            <label for="{{ field.id_for_label }}">
+              {% if field.field.required %}
+                <span class="required">{{ field.label }} </span>
+              {% else %}
+                {{ field.label }}
+              {% endif %}
+            </label>
+            {% render_field field class="form-control" %}
+            {% for error in field.errors %}
+              <span class="text-muted">{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
+    </div>
+    <div class="col-6">
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block js %}
+
+<script>
+
+$(document).ready(function(){
+    // Removendo autocomplete de data
+    $('#id_checkin').attr('autocomplete', 'off');
+    $("#id_pre_checkout").attr('autocomplete', 'off');
+    $("#id_checkout").attr('autocomplete', 'off');
+
+    $( function() {
+      $("#id_checkin").datepicker({ dateFormat: 'dd/mm/yy' });
+      $("#id_pre_checkout").datepicker({ dateFormat: 'dd/mm/yy' });
+      $("#id_checkout").datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+});
+
+$('#id_pre_checkout').on('change', function() {
+  var start = $('#id_checkin').val();
+  var end = $(this).val();
+  // Convert date to default format
+  var dayStart = start.split('/')[0]
+  var monthStart = start.split('/')[1]
+  var yearStart = start.split('/')[2]
+  var startDateFormated = yearStart + '-' + monthStart + '-' + dayStart
+  var dayEnd = end.split('/')[0]
+  var monthEnd = end.split('/')[1]
+  var yearEnd = end.split('/')[2]
+  var endDateFormated = yearEnd + '-' + monthEnd + '-' + dayEnd
+
+  // end - start returns difference in milliseconds
+  var startDate = new Date(startDateFormated);
+  var endDate = new Date(endDateFormated);
+  var millisecondsPerDay = 1000 * 60 * 60 * 24;
+  var millisBetween = endDate.getTime() - startDate.getTime();
+  var days = millisBetween / millisecondsPerDay;
+  // get days
+  var valor = $('form').data('valor');
+  var valor_total = parseInt(days) * parseInt(valor);
+  console.log(valor_total);
+  $('#id_valor_diaria').val(valor_total);
+
+  $('#id_quarto').val('{{ quarto }}');
+  $('#id_nome_cliente').val('{{ pessoa }}');
+});
+
+
+
+</script>
+
+{% endblock js %}

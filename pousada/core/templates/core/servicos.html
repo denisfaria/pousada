@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/price.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  <h1 class="display-4">Preço</h1>
+  <p class="lead">Valores sujeito a alteração. Favor confirmar no local no dia da locação.</p>
+</div>
+
+<div class="container">
+  <div class="card-deck mb-3 text-center">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Solteiro</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">R$ 90,00</h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Ar condicionado</li>
+          <li>Café da manhã</li>
+          <li style="visibility:hidden">.</li>
+        </ul>
+        <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'core:contato' %}">Pré-reserva</a>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Casal</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">R$ 120,00</h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Ar condicionado</li>
+          <li>Café da manhã</li>
+          <li style="visibility:hidden">.</li>
+        </ul>
+        <a class="btn btn-lg btn-block btn-primary" href="{% url 'core:contato' %}">Pré-reserva</a>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Casal Luxo</h4>
+      </div>
+      <div class="card-body">
+        <h1 class="card-title pricing-card-title">R$ 150,00</h1>
+        <ul class="list-unstyled mt-3 mb-4">
+          <li>Ar condicionado</li>
+          <li>Café da manhã</li>
+          <li>Almoço</li>
+        </ul>
+        <a class="btn btn-lg btn-block btn-primary" href="{% url 'core:contato' %}">Pré-reserva</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
