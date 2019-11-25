@@ -7,8 +7,12 @@ pousadafaria2019
 denisfaria0@gmail.com
 25021997Denis#
 
+
+heroku login
 git add .
 git commit -m "escrever algo"
+git push
+git push heroku master
 
 
 

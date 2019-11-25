@@ -1,4 +1,4 @@
-## Como contribuir?
+
 
 * Clone esse repositório.
 * Crie um virtualenv com Python 3.
@@ -19,10 +19,3 @@ python create_data.py
 python manage.py runserver
 ```
 
-## Links
-
-[gist rg3915 django-widget-tweaks](https://gist.github.com/rg3915/f0cb92e1ac8a707bba8e1a881fb4c09f)
-
-[django-widget-tweaks](https://github.com/jazzband/django-widget-tweaks)
-
-[CCBV](http://ccbv.co.uk/)
