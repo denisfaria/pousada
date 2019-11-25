@@ -1,0 +1,14 @@
+login heroku e site
+https://pousada-faria.herokuapp.com/
+
+admin
+pousadafaria2019
+
+denisfaria0@gmail.com
+25021997Denis#
+
+git add .
+git commit -m "escrever algo"
+
+
+
